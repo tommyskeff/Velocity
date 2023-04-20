@@ -10,6 +10,8 @@ shadow = "com.github.johnrengelman.shadow:8.1.0"
 spotless = "com.diffplug.spotless:6.12.0"
 
 [libraries]
+auto-service = "com.google.auto.service:auto-service:1.0.1"
+auto-service-annotations = "com.google.auto.service:auto-service-annotations:1.0.1"
 adventure-bom = "net.kyori:adventure-bom:4.13.1"
 adventure-facet = "net.kyori:adventure-platform-facet:4.3.0"
 asynchttpclient = "org.asynchttpclient:async-http-client:2.12.3"

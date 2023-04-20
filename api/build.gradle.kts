@@ -36,6 +36,9 @@ dependencies {
     api(libs.brigadier)
     api(libs.bundles.configurate)
     api(libs.caffeine)
+
+    compileOnly(libs.auto.service.annotations)
+    annotationProcessor(libs.auto.service)
 }
 
 tasks {
