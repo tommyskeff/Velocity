@@ -28,6 +28,10 @@ public class StatusPing implements MinecraftPacket {
 
   private long randomId;
 
+  public long getRandomId() {
+    return randomId;
+  }
+
   @Override
   public void decode(ByteBuf buf, ProtocolUtils.Direction direction, ProtocolVersion version) {
     randomId = buf.readLong();
