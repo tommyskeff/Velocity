@@ -33,10 +33,12 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import java.net.InetSocketAddress;
 import java.util.Optional;
 import java.util.Queue;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicIntegerFieldUpdater;
 import net.kyori.adventure.text.Component;
 import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
+import org.jetbrains.annotations.NotNull;
 import space.vectrix.flare.fastutil.Int2ObjectSyncMap;
 
 /**
@@ -85,6 +87,11 @@ public class LoginInboundConnection implements LoginPhaseConnection, KeyIdentifi
   @Override
   public ProtocolVersion getProtocolVersion() {
     return delegate.getProtocolVersion();
+  }
+
+  @Override
+  public @NotNull UUID getConnectionId() {
+    return delegate.getConnectionId();
   }
 
   @Override

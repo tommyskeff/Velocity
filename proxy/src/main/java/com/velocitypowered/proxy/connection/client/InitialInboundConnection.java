@@ -30,9 +30,12 @@ import com.velocitypowered.proxy.util.ClosestLocaleMatcher;
 import java.net.InetSocketAddress;
 import java.util.Locale;
 import java.util.Optional;
+import java.util.UUID;
+
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.logger.slf4j.ComponentLogger;
 import net.kyori.adventure.translation.GlobalTranslator;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Implements {@link InboundConnection} for a newly-established connection.
@@ -102,6 +105,11 @@ public final class InitialInboundConnection implements VelocityInboundConnection
   @Override
   public HandshakeIntent getHandshakeIntent() {
     return handshake.getIntent();
+  }
+
+  @Override
+  public @NotNull UUID getConnectionId() {
+    return connection.getConnectionId();
   }
 
   /**

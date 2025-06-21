@@ -10,13 +10,18 @@ package com.velocitypowered.api.proxy;
 import com.velocitypowered.api.network.HandshakeIntent;
 import com.velocitypowered.api.network.ProtocolState;
 import com.velocitypowered.api.network.ProtocolVersion;
+import org.jetbrains.annotations.NotNull;
+
 import java.net.InetSocketAddress;
 import java.util.Optional;
+import java.util.UUID;
 
 /**
  * Represents an incoming connection to the proxy.
  */
 public interface InboundConnection {
+
+  @NotNull UUID getConnectionId();
 
   /**
    * Returns the player's IP address.

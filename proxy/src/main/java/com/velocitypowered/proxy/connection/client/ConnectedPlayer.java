@@ -263,6 +263,11 @@ public class ConnectedPlayer implements MinecraftConnectionAssociation, Player, 
   }
 
   @Override
+  public @NotNull UUID getConnectionId() {
+    return connection.getConnectionId();
+  }
+
+  @Override
   public String getUsername() {
     return profile.getName();
   }

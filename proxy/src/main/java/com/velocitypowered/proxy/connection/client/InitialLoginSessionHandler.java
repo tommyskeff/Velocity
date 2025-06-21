@@ -163,7 +163,7 @@ public class InitialLoginSessionHandler implements MinecraftSessionHandler {
                   res = new AuthAttemptEvent.SuccessResult(GameProfile.forOfflinePlayer(username));
                 }
 
-                handlePlainAuthResult(res);
+                handleAuthResult(res, false);
               }
             }, mcConnection.eventLoop());
           }
@@ -234,7 +234,16 @@ public class InitialLoginSessionHandler implements MinecraftSessionHandler {
               );
         }
 
-        handleEncryptedAuthResult(res, sharedSecret);
+        // enable encryption for the connection
+        try {
+          mcConnection.enableEncryption(sharedSecret);
+        } catch (GeneralSecurityException e) {
+          logger.error("Unable to enable encryption for connection", e);
+          mcConnection.close(true);
+          return;
+        }
+
+        handleAuthResult(res, true);
       }
     }, mcConnection.eventLoop()).exceptionally(ex -> {
       logger.error("Exception in authentication attempt", ex);
@@ -244,19 +253,10 @@ public class InitialLoginSessionHandler implements MinecraftSessionHandler {
     return true;
   }
 
-  private void handlePlainAuthResult(AuthAttemptEvent.AuthResult result) {
-    if (result instanceof AuthAttemptEvent.SuccessResult res) {
-      mcConnection.setActiveSessionHandler(StateRegistry.LOGIN,
-          new AuthSessionHandler(server, inbound, res.profile(), false));
-    } else if (result instanceof AuthAttemptEvent.FailureResult failure) {
-      inbound.disconnect(failure.reason());
-    }
-  }
-
-  private void handleEncryptedAuthResult(AuthAttemptEvent.AuthResult res, byte[] sharedSecret) {
+  private void handleAuthResult(AuthAttemptEvent.AuthResult res, boolean online) {
     if (res instanceof AuthAttemptEvent.SuccessResult result) {
       // verify public key for 1.19.1+
-      if (inbound.getIdentifiedKey() != null
+      if (online && inbound.getIdentifiedKey() != null
           && inbound.getIdentifiedKey().getKeyRevision() == IdentifiedKey.Revision.LINKED_V2
           && inbound.getIdentifiedKey() instanceof final IdentifiedKeyImpl key) {
         if (!key.internalAddHolder(result.profile().getId())) {
@@ -266,23 +266,14 @@ public class InitialLoginSessionHandler implements MinecraftSessionHandler {
         }
       }
 
-      // enable encryption for the connection
-      try {
-        mcConnection.enableEncryption(sharedSecret);
-      } catch (GeneralSecurityException e) {
-        logger.error("Unable to enable encryption for connection", e);
-        mcConnection.close(true);
-        return;
-      }
-
       // initialize the session
       mcConnection.setActiveSessionHandler(StateRegistry.LOGIN,
-          new AuthSessionHandler(server, inbound, result.profile(), true));
+          new AuthSessionHandler(server, inbound, result.profile(), online));
     } else if (res instanceof AuthAttemptEvent.FailureResult failure) {
       // disconnect the player with the provided reason
       inbound.disconnect(failure.reason());
-    } else if (res == null) {
-      inbound.disconnect(Component.translatable("multiplayer.disconnect.authservers_down"));
+    } else {
+      throw new IllegalStateException();
     }
   }
 

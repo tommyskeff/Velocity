@@ -43,11 +43,14 @@ import io.netty.buffer.ByteBuf;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.util.Optional;
+import java.util.UUID;
+
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * The initial handler used when a connection is established to the proxy. This will either
@@ -232,6 +235,11 @@ public class HandshakeSessionHandler implements MinecraftSessionHandler {
           MinecraftConnection connection,
           LegacyPingPacket ping
   ) implements VelocityInboundConnection {
+
+    @Override
+    public @NotNull UUID getConnectionId() {
+      return connection.getConnectionId();
+    }
 
     @Override
     public InetSocketAddress getRemoteAddress() {

@@ -69,6 +69,7 @@ import java.security.GeneralSecurityException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
@@ -84,6 +85,7 @@ public class MinecraftConnection extends ChannelInboundHandlerAdapter {
 
   private static final Logger logger = LogManager.getLogger(MinecraftConnection.class);
 
+  private final UUID connectionId;
   private final Channel channel;
   public boolean pendingConfigurationSwitch = false;
   private SocketAddress remoteAddress;
@@ -103,6 +105,7 @@ public class MinecraftConnection extends ChannelInboundHandlerAdapter {
    * @param server  the Velocity instance
    */
   public MinecraftConnection(Channel channel, VelocityServer server) {
+    this.connectionId = UUID.randomUUID();
     this.channel = channel;
     this.remoteAddress = channel.remoteAddress();
     this.server = server;
@@ -606,4 +609,9 @@ public class MinecraftConnection extends ChannelInboundHandlerAdapter {
   public void setType(ConnectionType connectionType) {
     this.connectionType = connectionType;
   }
+
+  public UUID getConnectionId() {
+    return connectionId;
+  }
+
 }
